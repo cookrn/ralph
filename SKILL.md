@@ -67,9 +67,22 @@ Signs accumulate in `guardrails.md` and are injected into future iterations.
 
 ## Usage
 
-### Starting a Ralph Loop
+### Starting a Ralph Loop (Recommended: Plan First)
 
-Create a `RALPH_TASK.md` file in your project root:
+**Step 1: Generate Plan with Agent CLI**
+
+Before starting the Ralph loop, generate a detailed plan using Cursor Agent's Plan mode:
+
+```bash
+# Generate initial plan
+agent --mode=plan "Your task description"
+```
+
+This creates a structured plan that Ralph will execute against.
+
+**Step 2: Create RALPH_TASK.md with Plan**
+
+Create a `RALPH_TASK.md` file in your project root with the plan:
 
 ```markdown
 ---
@@ -149,6 +162,51 @@ Progress is in files and git, not in your head or the context.
 ### 5. Fresh Context is Cheap
 
 Don't hesitate to start fresh. State persists in files.
+
+## Plan → Execute → Test → Refine Loop
+
+The Ralph technique now supports an explicit iteration cycle:
+
+### Phase 1: Plan (agent --mode=plan)
+- Use `agent --mode=plan` to generate structured plan
+- Output: detailed steps, architecture, approach
+- Save plan to RALPH_TASK.md or use as input
+
+### Phase 2: Execute
+- Ralph executes the plan using Agent mode
+- Implement one component/step at a time
+- Commit after each meaningful change
+
+### Phase 3: Test
+- Run tests, linters, type checks
+- Validate against completion criteria
+- Document failures in .ralph/failures.md
+
+### Phase 4: Refine Plan
+- If tests fail or requirements change, refine the plan
+- Update RALPH_TASK.md with lessons learned
+- Add guardrails to .ralph/guardrails.md
+- Continue to next iteration
+
+### Ralph Loop Command
+
+```bash
+# Start Ralph with initial plan
+./ralph --plan "path/to/plan.md"
+
+# Or start with task file
+./ralph --task RALPH_TASK.md
+```
+
+### Example Flow
+
+```
+1. agent --mode=plan "Build landing page for composting handbook" → generates plan.md
+2. Ralph executes: creates HTML, CSS, components
+3. Ralph tests: runs HTML validator, checks responsiveness
+4. If fails: refine plan, add guardrail ("always validate HTML")
+5. Repeat until completion criteria met
+```
 
 ## Integration with Cursor Hooks
 
